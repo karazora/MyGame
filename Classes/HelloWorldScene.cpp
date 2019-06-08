@@ -116,8 +116,33 @@ bool HelloWorld::init()
     //    this->addChild(sprite, 0);
     //}
 
-	Sprite* sprite = Sprite::create("blue.png");
+	//Sprite* sprite = Sprite::create("four.png");
+	sprite = Sprite::create("four.png");
 	this->addChild(sprite);
+
+	sprite->setPosition(Vec2(1280.0f, 720.0f));
+
+	sprite->setRotation(45.0f);
+
+	sprite->setScale(3.0f, 4.0f);
+
+	sprite->setFlippedX(true);
+
+	sprite->setFlippedY(true);
+
+	//sprite->setVisible(false);
+
+	//色あいを設定
+	//sprite->setColor(Color3B(0x80, 0x80, 0x80));
+
+	//不透明度を設定
+	sprite->setOpacity(255);
+
+	//カウンターの初期化
+	counter = 0;
+
+	//updateが呼び出されるようにする
+	this->scheduleUpdate();
 
     return true;
 }
@@ -133,5 +158,64 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
     //EventCustom customEndEvent("game_scene_close_event");
     //_eventDispatcher->dispatchEvent(&customEndEvent);
 
+
+}
+
+void HelloWorld::update(float delta)
+{
+	//ここに更新処理を書く
+
+	//スプライトの現在座標を取得
+	Vec2 pos = sprite->getPosition();
+
+	//移動	
+	/*if (pos.x >= 1000.f && pos.y <= 600.0f) { pos += Vec2(0.0f, 4.0f); }else
+	if (pos.y <= 100.0f && pos.x < 1000.0f) { pos += Vec2(4.0f, 0.0f); }else
+	if (pos.x <= 0.0f && pos.y > 100.0f) { pos += Vec2(0.0f, -4.0f); }else
+	if (pos.y > 300.0f && pos.x > 0.0f) { pos += Vec2(-4.0f, 0.0f); }*/
+		
+	float screenXMax = 1280.0f;
+	float screenYMax = 720.0f;
+	float screenMin = 0.0f;
+	float speed = 16.0f;
+
+	if (pos.x >= screenXMax && pos.y <= screenYMax) { pos += Vec2(0.0f, speed); }//上
+	else if (pos.x <= screenMin && pos.y >= screenMin) { pos += Vec2(0.0f, -speed); }//下
+	else if (pos.x > screenMin && pos.y >= screenYMax) { pos += Vec2(-speed ,0.0f); }//左
+	else if (pos.x <= screenXMax && pos.y <= screenMin) { pos += Vec2(speed, 0.0f); }//右
+
+
+	//移動後の座標を反映
+	sprite->setPosition(pos);
+
+	//
+	//Vec2 vec;// = Vec2(0.0f, 0.0f);
+
+	//int posx = (int)pos.x;
+
+	//if (posx >= 700) {
+	//	vec = Vec2(-1.0f, 0.0f);
+	//}
+
+	//座標を移動させる
+	//pos += Vec2(-1.0f, 0.0f);
+	//pos += vec;
+
+	//透明化
+	//int opacity = sprite->getOpacity();
+	//if (opacity > 0) { opacity--; }
+	//sprite->setOpacity(opacity);
+
+	counter++;
+	float opacity = 255 - counter / 300.0f * 255.0f;
+	if (opacity < 0.0f) { opacity = 0.0f; }
+	sprite->setOpacity(opacity);
+	if (counter == 300) { counter = 0; }
+
+	/*if (pos.x <= 100)
+	{
+		vec = Vec2(1.0f, 0.0f);
+	}*/
+	
 
 }
