@@ -141,6 +141,9 @@ bool HelloWorld::init()
 	//カウンターの初期化
 	counter = 0;
 
+	//初期か
+	state = 0;
+
 	//updateが呼び出されるようにする
 	this->scheduleUpdate();
 
@@ -167,55 +170,37 @@ void HelloWorld::update(float delta)
 
 	//スプライトの現在座標を取得
 	Vec2 pos = sprite->getPosition();
-
-	//移動	
-	/*if (pos.x >= 1000.f && pos.y <= 600.0f) { pos += Vec2(0.0f, 4.0f); }else
-	if (pos.y <= 100.0f && pos.x < 1000.0f) { pos += Vec2(4.0f, 0.0f); }else
-	if (pos.x <= 0.0f && pos.y > 100.0f) { pos += Vec2(0.0f, -4.0f); }else
-	if (pos.y > 300.0f && pos.x > 0.0f) { pos += Vec2(-4.0f, 0.0f); }*/
 		
 	float screenXMax = 1280.0f;
 	float screenYMax = 720.0f;
 	float screenMin = 0.0f;
 	float speed = 16.0f;
 
-	if (pos.x >= screenXMax && pos.y <= screenYMax) { pos += Vec2(0.0f, speed); }//上
-	else if (pos.x <= screenMin && pos.y >= screenMin) { pos += Vec2(0.0f, -speed); }//下
-	else if (pos.x > screenMin && pos.y >= screenYMax) { pos += Vec2(-speed ,0.0f); }//左
-	else if (pos.x <= screenXMax && pos.y <= screenMin) { pos += Vec2(speed, 0.0f); }//右
+	//if (pos.x >= screenXMax && pos.y <= screenYMax) { pos += Vec2(0.0f, speed); }//上
+	//else if (pos.x <= screenMin && pos.y >= screenMin) { pos += Vec2(0.0f, -speed); }//下
+	//else if (pos.x > screenMin && pos.y >= screenYMax) { pos += Vec2(-speed ,0.0f); }//左
+	//else if (pos.x <= screenXMax && pos.y <= screenMin) { pos += Vec2(speed, 0.0f); }//右
+
+
+	switch (state)
+	{
+		case 0: pos += Vec2(-speed, 0.0f); if (pos.x <= 0.0f) { state = 1; } break;//左
+		case 1: pos += Vec2(0.0f, -speed); if (pos.y <= 0.0f) { state = 2; } break;//下
+		case 2: pos += Vec2( speed, 0.0f); if (pos.x >= 1280.0f) { state = 3; } break;//右
+		case 3: pos += Vec2( 0.0f, speed); if (pos.y >= 720.0f) { state = 0; } break;//上
+	}
+
+
+
 
 
 	//移動後の座標を反映
 	sprite->setPosition(pos);
 
-	//
-	//Vec2 vec;// = Vec2(0.0f, 0.0f);
-
-	//int posx = (int)pos.x;
-
-	//if (posx >= 700) {
-	//	vec = Vec2(-1.0f, 0.0f);
-	//}
-
-	//座標を移動させる
-	//pos += Vec2(-1.0f, 0.0f);
-	//pos += vec;
-
-	//透明化
-	//int opacity = sprite->getOpacity();
-	//if (opacity > 0) { opacity--; }
-	//sprite->setOpacity(opacity);
-
 	counter++;
 	float opacity = 255 - counter / 300.0f * 255.0f;
 	if (opacity < 0.0f) { opacity = 0.0f; }
 	sprite->setOpacity(opacity);
-	if (counter == 300) { counter = 0; }
-
-	/*if (pos.x <= 100)
-	{
-		vec = Vec2(1.0f, 0.0f);
-	}*/
-	
+	if (counter == 300) { counter = 0; }	
 
 }

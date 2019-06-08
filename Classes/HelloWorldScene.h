@@ -50,6 +50,9 @@ public:
 	//カウンタ
 	int counter;
 
+	//どちらに移動中なのか ０：左　１：下　２：右　３：上
+	int state;
+
 };
 
 #endif // __HELLOWORLD_SCENE_H__
