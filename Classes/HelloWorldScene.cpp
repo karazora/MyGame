@@ -117,10 +117,18 @@ bool HelloWorld::init()
     //}
 
 	//Sprite* sprite = Sprite::create("four.png");
-	sprite = Sprite::create("four.png");
+	sprite = Sprite::create("neko.png");
 	this->addChild(sprite);
+	
+	sprite2 = Sprite::create("one.png");
+	this->addChild(sprite2);
 
-	sprite->setPosition(Vec2(1280.0f, 720.0f));
+	sprite->setPosition(640.0f, 360.0f);
+	sprite2->setPosition(10.0f, 100.0f);
+
+
+	/*sprite->setPosition(Vec2(1280.0f, 720.0f));
+	
 
 	sprite->setRotation(45.0f);
 
@@ -128,21 +136,31 @@ bool HelloWorld::init()
 
 	sprite->setFlippedX(true);
 
-	sprite->setFlippedY(true);
+	sprite->setFlippedY(true);*/
 
 	//sprite->setVisible(false);
 
 	//色あいを設定
 	//sprite->setColor(Color3B(0x80, 0x80, 0x80));
+	//sprite->setColor(Color3B(255,0,0));
 
 	//不透明度を設定
 	sprite->setOpacity(255);
+	sprite2->setOpacity(255);
+
+	//アンチエイリアスの解除　？
+	sprite->getTexture()->setAliasTexParameters();
 
 	//カウンターの初期化
-	counter = 0;
+	//counter = 0;
+	counter = 10;
+	counter2 = 0;
 
-	//初期か
+	//初期化
 	state = 0;
+
+	//
+	flag = false;
 
 	//updateが呼び出されるようにする
 	this->scheduleUpdate();
@@ -170,8 +188,19 @@ void HelloWorld::update(float delta)
 
 	//スプライトの現在座標を取得
 	Vec2 pos = sprite->getPosition();
+
+	////画像の中心位置の変更　基準点を指定
+	//sprite->setAnchorPoint(Vec2(0.0f, 1.0f));
+
+	////回転
+	//float rot = sprite->getRotation();
+	//sprite->setRotation3D();
+	//rot += 1.0f;
+	//sprite->setRotation(rot);
+	
+	
 		
-	float screenXMax = 1280.0f;
+	float screenXMax = 1280.0f;//visibleSize.width	
 	float screenYMax = 720.0f;
 	float screenMin = 0.0f;
 	float speed = 16.0f;
@@ -181,26 +210,80 @@ void HelloWorld::update(float delta)
 	//else if (pos.x > screenMin && pos.y >= screenYMax) { pos += Vec2(-speed ,0.0f); }//左
 	//else if (pos.x <= screenXMax && pos.y <= screenMin) { pos += Vec2(speed, 0.0f); }//右
 
-
-	switch (state)
-	{
-		case 0: pos += Vec2(-speed, 0.0f); if (pos.x <= 0.0f) { state = 1; } break;//左
-		case 1: pos += Vec2(0.0f, -speed); if (pos.y <= 0.0f) { state = 2; } break;//下
-		case 2: pos += Vec2( speed, 0.0f); if (pos.x >= 1280.0f) { state = 3; } break;//右
-		case 3: pos += Vec2( 0.0f, speed); if (pos.y >= 720.0f) { state = 0; } break;//上
-	}
-
-
-
-
+	//画面移動
+	//switch (state)
+	//{
+	//	case 0: pos += Vec2(-speed, 0.0f); if (pos.x <= 0.0f) { state = 1; } break;//左
+	//	case 1: pos += Vec2(0.0f, -speed); if (pos.y <= 0.0f) { state = 2; } break;//下
+	//	case 2: pos += Vec2( speed, 0.0f); if (pos.x >= 1280.0f) { state = 3; } break;//右
+	//	case 3: pos += Vec2( 0.0f, speed); if (pos.y >= 720.0f) { state = 0; } break;//上
+	//}
 
 	//移動後の座標を反映
 	sprite->setPosition(pos);
 
-	counter++;
-	float opacity = 255 - counter / 300.0f * 255.0f;
-	if (opacity < 0.0f) { opacity = 0.0f; }
-	sprite->setOpacity(opacity);
-	if (counter == 300) { counter = 0; }	
+	////透明化
+	//counter++;
+	//float opacity = 255 - counter / 300.0f * 255.0f;
+	//if (opacity < 0.0f) { opacity = 0.0f; }
+	//sprite->setOpacity(opacity);
+	//if (counter == 300) { counter = 0; }	
 
+	//色合い
+	//sprite->setColor(Color3B(0, 0, 255));
+
+
+	counter++;
+	if (counter == 13 ) {
+		counter = 0;
+
+		if (flag)
+		{
+			state--;
+		}
+		else {
+			state++;
+		}
+
+		if (state == 0 || state == 2) { if (flag) { flag = false; } else { flag = true; } }
+	}
+
+	//画像の切り取り		開始点XY　範囲WH
+	sprite->setTextureRect(Rect( 32 * state , 64, 32, 32 ));
+	sprite->setScale(10);
+
+	
+	counter2++;
+	sprite2->setScaleX(counter2);
+	sprite2->setScaleY(counter2 / 10);
+	sprite2->setOpacity(counter2 % 127 + 128);
+	
+	
+	//往復　画像向き変更
+	/*if (pos.x <= 0 || pos.x > 1000) { 
+		counter = -counter; 
+		if (flag) { flag = false; }
+		else { flag = true; }
+	}
+	pos.x += counter;
+
+	sprite->setPosition(pos);
+	sprite->setFlippedX(flag);*/
+
+
+	//クロスフェード
+	/*sprite2->setTextureRect(Rect(0, 0, 32, 32));
+	sprite2->setScale(10);
+	if(counter < 255)counter++;
+	sprite->setOpacity(255 - counter);
+	sprite2->setOpacity(counter);*/
+
+	/*Color3B color = sprite->getColor();
+	counter++;
+	if (color.r > 0) { color.r = 255 - counter / 180.0f * 255.0f; }
+	if (color.b < 255) { color.b = counter / 180.0f * 255.0f; }
+	sprite->setColor(color);*/
+
+	//左右反転
+	//sprite->setFlippedX(true);
 }

@@ -47,11 +47,17 @@ public:
 	//スプライト
 	cocos2d::Sprite* sprite;
 
+	cocos2d::Sprite* sprite2;
+
 	//カウンタ
 	int counter;
+	int counter2;
 
 	//どちらに移動中なのか ０：左　１：下　２：右　３：上
 	int state;
+
+	//フラグ
+	bool flag;
 
 };
 
